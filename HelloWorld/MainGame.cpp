@@ -98,7 +98,7 @@ void DrawMap(MapMaking* map) {
 }
 
 void PaintNeighbours(MapMaking* map) {
-	/*int i = 19;
+	/*int i = 58;
 	for (int j = 0; j < map->tiles[i].neighbours.size(); j++)
 	{
 		if (map->tiles[i].neighbours[j]->type != WALL && map->tiles[i].type != WALL) {
@@ -162,10 +162,10 @@ bool MainGameUpdate( float elapsedTime )
 	
 
 	//debug neighbours
-	/*PaintNeighbours(&map1);
+	PaintNeighbours(&map1);
 	PaintNeighbours(&map2);
-	PaintNeighbours(&map3);*/
-	a.AStarAlgorithm(map1.endTile);
+	PaintNeighbours(&map3);
+	//a.AStarAlgorithm(map1.endTile);
 	if (endFound) {
 		return true;
 	}
