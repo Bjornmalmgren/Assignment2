@@ -10,12 +10,24 @@ enum tileTypes
 	WALL,
 	PATH
 };
+
 class Tile
 {
 private:
-	
+	int x;
+	int y;
 public:
+	int id;
+	int getX() { return x; }
+	int getY() { return y; }
+	void setX(int X) { x = X; };
+	void setY(int Y) { y = Y; };
+	double f, g, h;
 	int width;
-	std::vector<tileTypes> tiles;
+	tileTypes type;
+	int rectangleSize = 10;
+	std::vector<int> position;
+	std::vector<Tile*> neighbours;
+	Tile* owner;
 };
 
