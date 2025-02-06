@@ -197,12 +197,14 @@
     </ClCompile>
     <ClCompile Include="MapMaking.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Play.h" />
     <ClInclude Include="AStar.h" />
     <ClInclude Include="MapMaking.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Map1.txt" />

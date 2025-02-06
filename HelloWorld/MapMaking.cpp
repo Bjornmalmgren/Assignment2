@@ -14,7 +14,7 @@ void MapMaking::MakeMap(std::string filepath) {
 			t.width = line.length();
 			t.setX(i);
 			t.setY(row);
-			t.id = row + i;
+			t.id = row*t.width + i;
 			switch (line[i])
 			{
 			case 'X':

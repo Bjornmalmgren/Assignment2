@@ -7,9 +7,8 @@ public:
 	std::map<int, Tile*> openList;
 	std::map<int, Tile*> closedList;
 	Tile currentcell;
-	double CalculateHValue(Tile* currentCell, Tile end);
-	double CalculateGValue(Tile* currentCell);
+	int CalculateDistValue(Tile* currentCell, Tile* end);
 	bool IsDestination(Tile* currentCell, Tile end);
-	bool AStarAlgorithm(Tile end);
+	void AStarAlgorithm(Tile end);
 };
 
