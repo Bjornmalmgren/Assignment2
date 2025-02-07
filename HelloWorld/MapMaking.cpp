@@ -58,23 +58,58 @@ void MapMaking::MakeMap(std::string filepath) {
 			tiles[i].neighbours.push_back(&tiles[t]);
 
 		}
-		//left
-		if (tiles[i].getX() == 0) {
+		//upper right corner
+		if (tiles[i].getY() == 0) {
 
 		}
 		else
 		{
-			int t = i - 1;
-			tiles[i].neighbours.push_back(&tiles[t]);
+			if (i == tiles.size() - 1) {
+				int t = i + 1 - (tiles[0].width);
+				tiles[i].neighbours.push_back(&tiles[t]);
+			}
+			else if (tiles[i + 1].type == WALL || tiles[i - tiles[i].width].type == WALL) {
+			}
+			else
+			{
+				int t = i + 1 - (tiles[0].width);
+				tiles[i].neighbours.push_back(&tiles[t]);
+			}
+
 		}
 		//right
-		if (tiles[i].getX() == tiles[i].width-1) {
-;
+		if (tiles[i].getX() == tiles[i].width - 1) {
+			
 		}
 		else
 		{
 			int t = i + 1;
 			tiles[i].neighbours.push_back(&tiles[t]);
+		}
+		//bottom right corner
+		if (tiles[i].getY() == row - 1) {
+
+		}
+		else
+		{
+			if (i == 0) {
+				int t = i + 1 + (tiles[0].width);
+				if (t <= tiles.size() - 1) {
+					tiles[i].neighbours.push_back(&tiles[t]);
+				}
+			}
+			else if (tiles[i + 1].type == WALL || tiles[i + tiles[i].width].type == WALL) {
+
+			}
+			else
+			{
+				int t = i + 1 + (tiles[0].width);
+				if (t <= tiles.size() - 1) {
+					tiles[i].neighbours.push_back(&tiles[t]);
+				}
+			}
+
+
 		}
 		//bottom
 		if (tiles[i].getY() == row - 1) {
@@ -85,7 +120,7 @@ void MapMaking::MakeMap(std::string filepath) {
 			tiles[i].neighbours.push_back(&tiles[t]);
 		}
 		//bottom left corner
-		if (tiles[i].getY() == row - 1 ) {
+		if (tiles[i].getY() == row - 1) {
 		}
 		else
 		{
@@ -101,32 +136,16 @@ void MapMaking::MakeMap(std::string filepath) {
 				int t = i - 1 + (tiles[0].width);
 				tiles[i].neighbours.push_back(&tiles[t]);
 			}
-			
+
 		}
-		//bottom right corner
-		if (tiles[i].getY() == row - 1 ) {
+		//left
+		if (tiles[i].getX() == 0) {
 
 		}
 		else
 		{
-			if (i == 0) {
-				int t = i + 1 + (tiles[0].width);
-				if (t <= tiles.size()-1) {
-					tiles[i].neighbours.push_back(&tiles[t]);
-				}
-			}
-			else if (tiles[i + 1].type == WALL || tiles[i + tiles[i].width].type == WALL) {
-
-			}
-			else
-			{
-				int t = i + 1 + (tiles[0].width);
-				if (t <= tiles.size()-1) {
-					tiles[i].neighbours.push_back(&tiles[t]);
-				}
-			}
-			
-			
+			int t = i - 1;
+			tiles[i].neighbours.push_back(&tiles[t]);
 		}
 		//upper left corner
 		if (tiles[i].getY() == 0 ) {
@@ -154,24 +173,9 @@ void MapMaking::MakeMap(std::string filepath) {
 			}
 		
 		}
-		//upper right corner
-		if (tiles[i].getY() == 0) {
-
+		if (tiles[i].type == START) {
+			startTile = tiles[i];
 		}
-		else
-		{
-			if (i == tiles.size() - 1) {
-				int t = i + 1 - (tiles[0].width);
-				tiles[i].neighbours.push_back(&tiles[t]);
-			}
-			else if(tiles[i + 1].type == WALL || tiles[i - tiles[i].width].type == WALL){
-			}
-			else
-			{
-				int t = i + 1 - (tiles[0].width);
-				tiles[i].neighbours.push_back(&tiles[t]);
-			}
-			
-		}
+		
 	}
 }
