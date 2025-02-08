@@ -6,6 +6,7 @@
 #include "Timer.h"
 #include "DepthFirst.h"
 #include <sstream>
+#include "Greedy.h"
 int DISPLAY_WIDTH = 1240;
 int DISPLAY_HEIGHT = 640;
 int DISPLAY_SCALE = 2;
@@ -15,6 +16,7 @@ bool firstTime = true;
 int row = 0;
 bool runAStar = true;
 bool runDepthFirst = false;
+bool runGreedy = false;
 
 std::vector<MapMaking*> maps;
 MapMaking m1;
@@ -28,6 +30,9 @@ AStar a3;
 DepthFirst d1;
 DepthFirst d2;
 DepthFirst d3;
+Greedy g1;
+Greedy g2;
+Greedy g3;
 
 Timer AStartT1;
 Timer AStartT2;
@@ -37,13 +42,15 @@ Timer BreadthT1;
 Timer BreadthT2;
 Timer BreadthT3;
 
+Timer GreedyT1;
+Timer GreedyT2;
+Timer GreedyT3;
+
 void DrawMap(MapMaking* map, Play::Vector2D original) {
 	startRect = Play::Vector2D(startRect.x+ map->tiles[0].width * map->tiles[0].rectangleSize, startPosition.y);
 	for (size_t i = map->tiles.size()-1; i > 0; i--)
 	{ 
-		if (map->tiles[i].id == 54 || map->tiles[i].id == 79) {
-			int t1 = 2;
-		}
+		
 		int t = i + 1;
 		if (t % (map->tiles[i].width) == 0) {
 			startRect.y += map->tiles[i].rectangleSize;
@@ -133,7 +140,7 @@ void DrawAStarPath(AStar a, Tile* end, Timer timer, Play::Point2D pos) {
 	if (runAStar) {
 		timer.startTimer();
 		a.AStarAlgorithm(*end);
-		timer.stopTimer();
+		timer.stopTimerMicro();
 		std::string s = std::to_string(timer.time) + " microsec";
 		Play::DrawDebugText(pos, s.c_str());
 
@@ -180,7 +187,7 @@ void DrawDepthPath(DepthFirst* d, Tile* end, Timer timer, Play::Point2D pos, int
 	if (runDepthFirst) {
 		timer.startTimer();
 		d->TraversMap();
-		timer.stopTimer();
+		timer.stopTimerMicro();
 		std::string s = std::to_string(timer.time) + " microsec";
 		Play::DrawDebugText(pos, s.c_str());
 
@@ -192,6 +199,34 @@ void DrawDepthPath(DepthFirst* d, Tile* end, Timer timer, Play::Point2D pos, int
 		Play::Point2D pos1 = Play::Vector2D(as->position[0] - 9+xOffset, as->position[1] - 9 + yOffset);
 
 		Play::Point2D pos2 = Play::Vector2D(as->position[0] - 1 + xOffset, as->position[1] - 1 + yOffset);
+		Play::DrawRect (pos1, pos2, Play::cYellow, true);
+		//t = as;
+
+	}
+}
+
+void DrawGreedyPath(Greedy* g, Tile* end, Timer timer, Play::Point2D pos, int xOffset, int yOffset) {
+
+	
+	
+	if (runGreedy == true) {
+		timer.startTimer();
+		g->TraversMap();
+		timer.stopTimerNano();
+		std::string s = std::to_string(timer.time) + " Nanosec";
+		Play::DrawDebugText(pos, s.c_str());
+	}
+	
+	
+
+	
+
+
+	for (auto as : g->tilesTraversed)
+	{
+		Play::Point2D pos1 = Play::Vector2D(as->position[0] - 9 + xOffset, as->position[1] - 9 + yOffset);
+
+		Play::Point2D pos2 = Play::Vector2D(as->position[0] - 1 + xOffset, as->position[1] - 1 + yOffset);
 		Play::DrawRect(pos1, pos2, Play::cYellow, true);
 		//t = as;
 
@@ -199,7 +234,7 @@ void DrawDepthPath(DepthFirst* d, Tile* end, Timer timer, Play::Point2D pos, int
 }
 
 void PaintNeighbours(MapMaking* map) {
-	/*int i = 58;
+	int i = 55;
 	for (int j = 0; j < map->tiles[i].neighbours.size(); j++)
 	{
 		if (map->tiles[i].neighbours[j]->type != WALL && map->tiles[i].type != WALL) {
@@ -207,12 +242,12 @@ void PaintNeighbours(MapMaking* map) {
 
 			Play::Vector2D end = Play::Vector2D(map->tiles[i].neighbours[j]->position[0] - 5, map->tiles[i].neighbours[j]->position[1] - 5);
 
-			Play::DrawLine(start, end, Play::cBlack);
+			Play::DrawLine(start, end, Play::cMagenta);
 		}
 
-	}*/
+	}
 
-	for (int i = 0; i < map->tiles.size(); i++)
+	/*for (int i = 0; i < map->tiles.size(); i++)
 	{
 		for (int j = 0; j < map->tiles[i].neighbours.size(); j++)
 		{
@@ -227,7 +262,7 @@ void PaintNeighbours(MapMaking* map) {
 			
 		}
 		
-	}
+	}*/
 }
 
 
@@ -242,7 +277,7 @@ void MainGameEntry( PLAY_IGNORE_COMMAND_LINE )
 	m2.MakeMap("../Maps/Map2.txt");
 
 	m3.MakeMap("../Maps/Map3.txt");
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		
 		
@@ -264,6 +299,18 @@ void MainGameEntry( PLAY_IGNORE_COMMAND_LINE )
 	a2.openList.insert(pair<int, Tile*>(maps[1]->startTile.id, &maps[1]->startTile));
 	a3.openList.insert(pair<int, Tile*>(maps[2]->startTile.id, &maps[2]->startTile));
 	
+	g1.endTile = &maps[6]->endTile;
+	g1.startTile = &maps[6]->startTile;
+	g1.tilesTraversed.push_back(&maps[6]->startTile);
+
+	g2.endTile = &maps[7]->endTile;
+	g2.startTile = &maps[7]->startTile;
+	g2.tilesTraversed.push_back(&maps[7]->startTile);
+
+	g3.endTile = &maps[8]->endTile;
+	g3.startTile = &maps[8]->startTile;
+	g3.tilesTraversed.push_back(&maps[8]->startTile);
+
 	d1.startTile = &maps[3]->startTile;
 	d1.endTile = &maps[3]->endTile;
 	d1.traversedList.push_back(d1.startTile);
@@ -314,10 +361,28 @@ bool MainGameUpdate( float elapsedTime )
 		startRect = Play::Vector2D(startPosition.x, startPosition.y);
 		Play::Vector2D a = startRect;
 		DrawMap(maps[5], a);
+
+		startPosition.y = 20;
+		startPosition.x += 390;
+		startRect = startPosition;
+		DrawMap(maps[6], startRect);
+
+		//startRect = startPosition;
+		startPosition.y += 170;
+
+		startRect = Play::Vector2D(startPosition.x, startPosition.y);
+		DrawMap(maps[7], startRect);
+
+		startPosition.y += 170;
+
+		startRect = startPosition;
+		startRect = Play::Vector2D(startPosition.x, startPosition.y);
+		Play::Vector2D e = startRect;
+		DrawMap(maps[8], e);
 	
 	//PaintNeighbours(&map1);
 	//PaintNeighbours(&map2);
-	//PaintNeighbours(&map3);
+	//PaintNeighbours(maps[2]);
 	if (firstTime == true) {
 		firstTime = false;
 		a1.currentcell = maps[0]->startTile;
@@ -326,22 +391,27 @@ bool MainGameUpdate( float elapsedTime )
 		a3.currentcell = maps[2]->startTile;
 		
 	}
-	DrawAStarPath(a1, &maps[0]->endTile, AStartT1, Play::Point2D(245, 50));
+	//run A*
+	/*DrawAStarPath(a1, &maps[0]->endTile, AStartT1, Play::Point2D(245, 50));
 
 	DrawAStarPath(a2, &maps[1]->endTile, AStartT2, Play::Point2D(245, 220));
 
-	DrawAStarPath(a3, &maps[2]->endTile, AStartT3, Play::Point2D(350, 390));
+	DrawAStarPath(a3, &maps[2]->endTile, AStartT3, Play::Point2D(350, 390));*/
 
 	//runAStar = false;
 	runDepthFirst = true;
 
-	//debug neighbours
-	DrawDepthPath(&d1, d1.endTile, BreadthT1, Play::Point2D(245+390, 50), 390,0);
+	//run depth first
+	/*DrawDepthPath(&d1, d1.endTile, BreadthT1, Play::Point2D(245+390, 50), 390,0);
 	DrawDepthPath(&d2, d2.endTile, BreadthT2, Play::Point2D(245+390, 220),390,0);
-	DrawDepthPath(&d3, d3.endTile, BreadthT3, Play::Point2D(350+390, 390),390,0);
+	DrawDepthPath(&d3, d3.endTile, BreadthT3, Play::Point2D(350+390, 390),390,0);*/
 	//runDepthFirst = false;
-
+	runGreedy = true;
 	
+	DrawGreedyPath(&g1, g1.endTile, GreedyT1, Play::Point2D(245 + 780, 50), 780, 0);
+	DrawGreedyPath(&g2, g2.endTile, GreedyT2, Play::Point2D(245 + 780, 220), 780, 0);
+	DrawGreedyPath(&g3, g3.endTile, GreedyT3, Play::Point2D(350 + 780, 390), 780, 0);
+
 	//Play::DrawDebugText(Play::Point2D(DISPLAY_WIDTH/3, DISPLAY_HEIGHT / 3), "A");
 	
 	

@@ -30,6 +30,9 @@
     <ClCompile Include="DepthFirst.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Greedy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Play.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DepthFirst.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Greedy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
